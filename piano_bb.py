@@ -241,7 +241,9 @@ def show_next_frame():
         return  # don't advance frames, let user retry
 
     if keys:
-        annotations[frame_idx - FRAME_SKIP - 1] = keys
+        annotations[frame_idx - FRAME_SKIP - 1] = [
+            k.strip().lower() for k in keys.split(",")
+        ]
     file.seek(0)
     file.write(json.dumps(annotations, indent=4))
     file.flush()
