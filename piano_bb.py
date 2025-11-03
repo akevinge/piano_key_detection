@@ -3,9 +3,11 @@ import os
 import numpy as np
 import numpy.typing as npt
 import tkinter as tk
-from tkinter import *
 import json
+
+from tkinter import *
 from PIL import Image, ImageTk
+from pathlib import Path
 
 INPUT_VIDEO_PATH = "videos/fur-elise.mp4"
 ANNOTATIONS_FOLDER = "annotations/"
@@ -198,8 +200,10 @@ if os.path.exists(f"{INPUT_VIDEO_PATH}-annotations.json"):
         exit()
 
 
-os.makedirs(ANNOTATIONS_FOLDER, exist_ok=True)
-file = open(f"{ANNOTATIONS_FOLDER}/{INPUT_VIDEO_PATH}-annotations.json", "w")
+Path(ANNOTATIONS_FOLDER).mkdir(parents=True, exist_ok=True)
+file = open(
+    f"{ANNOTATIONS_FOLDER}/{os.path.basename(INPUT_VIDEO_PATH)}-annotations.json", "w"
+)
 
 
 def validate_entry():
