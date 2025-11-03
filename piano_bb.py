@@ -7,7 +7,7 @@ from tkinter import *
 import json
 from PIL import Image, ImageTk
 
-INPUT_VIDEO_PATH = "fur-elise.mp4"
+INPUT_VIDEO_PATH = "videos/fur-elise.mp4"
 ANNOTATIONS_FOLDER = "annotations/"
 FRAME_SKIP = (
     2  # How many frames to skip between annotations. 0 to annotate every frame.
