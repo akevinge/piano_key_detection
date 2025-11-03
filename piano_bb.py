@@ -14,6 +14,7 @@ ANNOTATIONS_FOLDER = "annotations/"
 FRAME_SKIP = (
     2  # How many frames to skip between annotations. 0 to annotate every frame.
 )
+STARTING_FRAME = 1000
 
 # Piano settings
 # 88-key piano has 52 white keys
@@ -171,6 +172,7 @@ cap = cv2.VideoCapture(INPUT_VIDEO_PATH)
 if not cap.isOpened():
     print("Error: Could not open video.")
     exit()
+cap.set(cv2.CAP_PROP_POS_FRAMES, STARTING_FRAME)
 
 root = Tk()
 root.title("Piano Key Annotation")
@@ -188,7 +190,7 @@ entry.pack()
 annotation_label = Label(root, text="", fg="blue")
 annotation_label.pack()
 
-frame_idx = 0
+frame_idx = STARTING_FRAME
 annotations = {}
 
 # Check if file exists:
