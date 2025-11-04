@@ -282,6 +282,7 @@ def show_next_frame():
 
 Button(root, text="Next Frame", command=show_next_frame).pack()
 Button(root, text="Quit", command=lambda: (cap.release(), root.destroy())).pack()
+entry.bind("<Return>", lambda event: show_next_frame())
 
 show_next_frame()
 root.mainloop()
