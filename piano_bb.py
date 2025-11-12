@@ -9,12 +9,13 @@ from tkinter import *
 from PIL import Image, ImageTk
 from pathlib import Path
 
-INPUT_VIDEO_PATH = "videos/fur-elise.mp4"
+INPUT_VIDEO_PATH = "videos/clown-balloon.mp4"
 ANNOTATIONS_FOLDER = "annotations/"
+IMAGE_FOLDER = "images/clown-balloon"
 FRAME_SKIP = (
-    2  # How many frames to skip between annotations. 0 to annotate every frame.
+    10  # How many frames to skip between annotations. 0 to annotate every frame.
 )
-STARTING_FRAME = 1000
+STARTING_FRAME = 200
 
 # Piano settings
 # 88-key piano has 52 white keys
@@ -25,9 +26,9 @@ NUM_BLACK_KEYS = 36
 # Increase top to move the piano down, increase bottom to move it up.
 # Increase both will shrink the piano vertically.
 # The same applies for left/right.
-PADDING = (672, 50, 220, 45)
-BLACK_KEY_WIDTH = 50
-BLACK_KEY_HEIGHT = 106
+PADDING = (445, 35, 420, 40)
+BLACK_KEY_WIDTH = 25
+BLACK_KEY_HEIGHT = 135
 
 # In a C-Major scale (C,D,E,F,G,A,B), which white keys have a black key (a sharp)
 # immediately after them?
@@ -41,6 +42,24 @@ NOTES_WITH_SHARPS = {0, 1, 3, 4, 5}
 # A standard 88-key piano starts on the note 'A' (A0).
 # In our C-based index, 'A' is index 5. This is our starting offset.
 START_KEY_OFFSET = 5
+
+current_bgr_frame = None
+
+
+def crop_piano_region(frame, padding, margin_px=30, margin_ratio=0.0):
+    top, right, bottom, left = padding
+    h, w = frame.shape[:2]
+    add_x = int(round(w * margin_ratio))
+    add_y = int(round(h * margin_ratio))
+    grow_x = margin_px + add_x
+    grow_y = margin_px + add_y
+    x1 = max(0, int(left) - grow_x)
+    y1 = max(0, int(top) - grow_y)
+    x2 = min(w, int(w - right) + grow_x)
+    y2 = min(h, int(h - bottom) + grow_y)
+    if x2 <= x1 or y2 <= y1:
+        return frame
+    return frame[y1:y2, x1:x2]
 
 
 # --- 1. Define Dimensions and Colors ---
@@ -233,28 +252,42 @@ def validate_entry():
 
 
 # --- Display & Annotation Logic ---
-def show_next_frame():
-    global frame_idx
-    keys = entry.get().strip()
-    if not validate_entry():
-        annotation_label.config(
-            text="Invalid input. Use comma-separated numbers or 'b'-prefixed black keys (e.g., 1, b3, 7)."
-        )
-        return  # don't advance frames, let user retry
+def save_current(idx):
+    global current_bgr_frame
+    raw = entry.get()
+    if raw.strip() == "":
+        annotations[idx] = []
+    else:
+        if not validate_entry():
+            annotation_label.config(
+                text="Invalid input. Use comma-separated numbers or 'b'-prefixed black keys (e.g., 1, b3, 7)."
+            )
+            return False
+        annotations[idx] = [k.strip().lower() for k in raw.split(",")]
 
-    if keys:
-        annotations[frame_idx - FRAME_SKIP - 1] = [
-            k.strip().lower() for k in keys.split(",")
-        ]
     file.seek(0)
     file.write(json.dumps(annotations, indent=4))
     file.flush()
 
+    if current_bgr_frame is not None:
+        cropped = crop_piano_region(current_bgr_frame, PADDING)
+        out_path = os.path.join(IMAGE_FOLDER, f"{idx}.jpg")
+        ok = cv2.imwrite(out_path, cropped)
+        if not ok:
+            print(f"[warn] failed to write {out_path}")
+
+    entry.delete(0, END)
+    return True
+
+
+def render_frame(idx):
+    global current_bgr_frame
+    cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
     ret, frame = cap.read()
     if not ret:
         annotation_label.config(text="End of video reached.")
-        return
-
+        return False
+    current_bgr_frame = frame.copy()
     bb_img = generate_piano_bb_image(
         frame.shape[1],
         frame.shape[0],
@@ -271,18 +304,28 @@ def show_next_frame():
 
     image_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
     img = Image.fromarray(image_rgb)
-    imgtk = ImageTk.PhotoImage(image=img)
-    frame_label.imgtk = imgtk
+    imgtk = ImageTk.PhotoImage(image=img, master=root)
+
     frame_label.configure(image=imgtk)
-    entry.delete(0, END)
+    frame_label.imgtk = imgtk
+    annotation_label.config(text=f"Frame {idx} (skip={FRAME_SKIP})")
+    return True
+
+
+def show_next_frame():
+    global frame_idx
+    if not save_current(frame_idx):
+        return
 
     frame_idx += FRAME_SKIP + 1
-    root.after(10, lambda: None)  # keep the UI responsive
+    if not render_frame(frame_idx):
+        return
+    root.after(10, lambda: None)
 
 
 Button(root, text="Next Frame", command=show_next_frame).pack()
 Button(root, text="Quit", command=lambda: (cap.release(), root.destroy())).pack()
 entry.bind("<Return>", lambda event: show_next_frame())
 
-show_next_frame()
+render_frame(frame_idx)
 root.mainloop()
