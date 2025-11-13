@@ -7,9 +7,9 @@ import cv2
 import utils
 import json
 
-VIDEO_PATH = "videos/clown-balloon.mp4"
-OUTPUT_DIR = "datasets/clown-balloon/raw"
-ANNOTATION_FILE_PATH = "annotations/clown-balloon.mp4-annotations.json"
+VIDEO_PATH = "videos/elegy.mp4"
+OUTPUT_DIR = "datasets/elegy/raw"
+ANNOTATION_FILE_PATH = "annotations/elegy.mp4-annotations.json"
 
 utils.make_directory_force_recursively(OUTPUT_DIR + "/images")
 

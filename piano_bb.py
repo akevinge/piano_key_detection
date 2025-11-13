@@ -9,13 +9,13 @@ from tkinter import *
 from PIL import Image, ImageTk
 from pathlib import Path
 
-INPUT_VIDEO_PATH = "videos/clown-balloon.mp4"
+INPUT_VIDEO_PATH = "videos/elegy.mp4"
 ANNOTATIONS_FOLDER = "annotations/"
-IMAGE_FOLDER = "images/clown-balloon"
+IMAGE_FOLDER = "images/"
 FRAME_SKIP = (
     10  # How many frames to skip between annotations. 0 to annotate every frame.
 )
-STARTING_FRAME = 200
+STARTING_FRAME = 300
 
 # Piano settings
 # 88-key piano has 52 white keys
@@ -26,9 +26,9 @@ NUM_BLACK_KEYS = 36
 # Increase top to move the piano down, increase bottom to move it up.
 # Increase both will shrink the piano vertically.
 # The same applies for left/right.
-PADDING = (445, 35, 420, 40)
+PADDING = (455, 0, 415, 0)
 BLACK_KEY_WIDTH = 25
-BLACK_KEY_HEIGHT = 135
+BLACK_KEY_HEIGHT = 145
 
 # In a C-Major scale (C,D,E,F,G,A,B), which white keys have a black key (a sharp)
 # immediately after them?

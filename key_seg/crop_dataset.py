@@ -8,10 +8,10 @@ import utils
 from coco import CocoBuilder
 
 # Video path
-VIDEO_PATH = "videos/fur-elise.mp4"
-RAW_IMAGE_PATH = "datasets/fur-elise/raw/images"
-ANNOTATION_FILE_PATH = "datasets/fur-elise/raw/annotations.json"
-OUTPUT_DIR = "datasets/fur-elise/cropped"
+VIDEO_PATH = "videos/elegy.mp4"
+RAW_IMAGE_PATH = "datasets/elegy/raw/images"
+ANNOTATION_FILE_PATH = "datasets/elegy/raw/annotations.json"
+OUTPUT_DIR = "datasets/elegy/cropped"
 
 
 NON_PRESSED_NEIGHBOR_BIAS = 0.5
@@ -27,14 +27,24 @@ NUM_WHITE_KEYS = 52
 NUM_BLACK_KEYS = 36
 
 # Fur Elise
-PADDING = (672, 50, 220, 45)
-BLACK_KEY_WIDTH = 50
-BLACK_KEY_HEIGHT = 106
+# PADDING = (672, 50, 220, 45)
+# BLACK_KEY_WIDTH = 50
+# BLACK_KEY_HEIGHT = 106
 
 # Clown Balloon
 # PADDING = (445, 35, 420, 40)
 # BLACK_KEY_WIDTH = 25
 # BLACK_KEY_HEIGHT = 135
+
+# Chopin Etude Op.10
+# PADDING = (410, 0, 440, 0)
+# BLACK_KEY_WIDTH = 25
+# BLACK_KEY_HEIGHT = 145
+
+# Elegy
+PADDING = (455, 0, 415, 0)
+BLACK_KEY_WIDTH = 25
+BLACK_KEY_HEIGHT = 145
 
 # Top, right, bottom, left padding for the piano in the video
 # Increase top to move the piano down, increase bottom to move it up.

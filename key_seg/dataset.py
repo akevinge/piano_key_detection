@@ -19,7 +19,24 @@ datasets = [
         json_path="datasets/clown-balloon/cropped/annotations.json",
         transform=None,
     ),
+    CocoKeyDataset.from_json_file(
+        images_dir="datasets/chopin-etude-op.10/cropped",
+        json_path="datasets/chopin-etude-op.10/cropped/annotations.json",
+        transform=None,
+    ),
 ]
+
+
+def isolated_dataset_loader(
+    batch_size: int = 32,
+    transforms: transforms.Compose = None,
+) -> DataLoader:
+    isolated_dataset = CocoKeyDataset.from_json_file(
+        images_dir="datasets/elegy/cropped",
+        json_path="datasets/elegy/cropped/annotations.json",
+        transform=transforms,
+    )
+    return DataLoader(isolated_dataset, batch_size=batch_size, shuffle=False)
 
 
 def dataset(
