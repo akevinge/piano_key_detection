@@ -39,6 +39,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 yolo_wrapper = YOLO("yolov8n-cls.pt")  # YoloV8 nano
 model = yolo_wrapper.model
 
+
 # Replace the final layer for binary classification with dropout
 for name, module in model.named_modules():
     if name == "model.9.linear":

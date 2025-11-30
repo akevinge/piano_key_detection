@@ -9,7 +9,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 from pathlib import Path
 
-INPUT_VIDEO_PATH = "videos/elegy.mp4"
+INPUT_VIDEO_PATH = "videos/bach-preludes.mp4"
 ANNOTATIONS_FOLDER = "annotations/"
 IMAGE_FOLDER = "images/"
 FRAME_SKIP = (
@@ -26,7 +26,7 @@ NUM_BLACK_KEYS = 36
 # Increase top to move the piano down, increase bottom to move it up.
 # Increase both will shrink the piano vertically.
 # The same applies for left/right.
-PADDING = (455, 0, 415, 0)
+PADDING = (660, 40, 200, 34)
 BLACK_KEY_WIDTH = 25
 BLACK_KEY_HEIGHT = 145
 
